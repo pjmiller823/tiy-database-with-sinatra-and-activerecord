@@ -36,7 +36,7 @@ get '/employee_show' do
   if @employee
     erb :employee_show
   else
-    erb :no_employee_found
+    redirect('/no_employee_found')
   end
 end
 
