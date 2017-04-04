@@ -98,6 +98,13 @@ get '/searched' do
   erb :searched
 end
 
+get '/course_searched' do
+  search = params["search"]
+
+  @courses = Course.where("name like ?", "%#{search}%")
+  erb :course_searched
+end
+
 get '/edit' do
   database = PG.connect(dbname: "tiy-database")
 
