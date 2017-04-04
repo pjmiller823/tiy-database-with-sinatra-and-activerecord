@@ -1,54 +1,64 @@
 require 'sinatra'
 require 'pg'
 require 'sinatra/reloader' if development?
+require 'active_record'
+
+ActiveRecord::Base.logger = Logger.new(STDOUT)
+ActiveRecord::Base.establish_connection(
+  adapter: "postgresql",
+  database: "tiy-database"
+)
+
+class Employee < ActiveRecord::Base
+  validates :name, presence: true
+  validates :position, inclusion: { in: %w{Instructor Student}, message: "%{value} must be Instructor or Student" }
+
+  self.primary_key = "id"
+end
+
+after do
+  ActiveRecord::Base.connection.close
+end
 
 get '/' do
   erb :home
 end
 
 get '/employees' do
-  database = PG.connect(dbname: "tiy-database")
-  @employees = database.exec ("select * from employees")
+  @employees = Employee.all
 
   erb :employees
 end
 
 get '/employee_show' do
-
-  id = params["id"]
-  database = PG.connect(dbname: "tiy-database")
-  employees = database.exec("select * from employees where id =$1", [id])
-
-  @employee = employees.first
-
-  erb :employee_show
+  @employee = Employee.find(params["id"])
+  if @employee
+    erb :employee_show
+  else
+    erb :no_employee_found
+  end
 end
 
 get '/new' do
+  @employee = Employee.new
+
   erb :employees_new
 end
 
 get '/employees_new' do
-  name = params["name"]
-  phone = params["phone"]
-  address = params["address"]
-  position = params["position"]
-  salary = params["salary"]
-  github = params["github"]
-  slack = params["slack"]
-  database = PG.connect(dbname: "tiy-database")
-  database.exec("insert into employees (name, phone, address, position, salary, github, slack) values($1, $2, $3, $4, $5, $6, $7)", [name, phone, address, position, salary, github, slack])
-
-  redirect('/')
+  @employee = Employee.create(params)
+  if @employee.valid?
+    redirect('/')
+  else
+    p @employee.errors.messages
+    erb :employees_new
+  end
 end
 
 get '/searched' do
-  name = params["search"]
-  github = params["search"]
-  slack = params["search"]
-  database = PG.connect(dbname: "tiy-database")
-  @employees = database.exec("select * from employees where name like '%#{name}%' or github=$1 or slack=$2", [github, slack])
+  search = params["search"]
 
+  @employees = Employee.where("name like ? or github = ? or slack = ?", "%#{search}%", search, search)
   erb :searched
 end
 
