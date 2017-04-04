@@ -12,6 +12,7 @@ ActiveRecord::Base.establish_connection(
 class Employee < ActiveRecord::Base
   validates :name, presence: true
   validates :position, inclusion: { in: %w{Instructor Student}, message: "%{value} must be Instructor or Student" }
+  validates :salary, presence: true
 
   self.primary_key = "id"
 end
@@ -63,38 +64,34 @@ get '/searched' do
 end
 
 get '/edit' do
-  id = params["id"]
   database = PG.connect(dbname: "tiy-database")
-  employees = database.exec("select * from employees where id =$1", [id])
 
-  @employee = employees.first
+  @employee = Employee.find(params["id"])
 
   erb :edit
 
 end
 
 get '/update' do
-
-  id = params["id"]
-  name = params["name"]
-  phone = params["phone"]
-  address = params["address"]
-  position = params["position"]
-  salary = params["salary"]
-  github = params["github"]
-  slack = params["slack"]
   database = PG.connect(dbname: "tiy-database")
-  database.exec("UPDATE employees SET name = $1, phone = $2, address = $3, position = $4, salary = $5, github = $6, slack =$7 WHERE id = $8;", [name, phone, address, position, salary, github, slack, id])
 
-  employees = database.exec("select * from employees where id =$1", [id])
-  @employee = employees.first
-  erb :employee_show
+  @employee = Employee.find(params["id"])
+
+  @employee.update_attributes(params)
+
+  if @employee.valid?
+    redirect to("/employee_show?id=#{@employee.id}")
+  else
+    erb :edit
+  end
 end
 
 get '/delete' do
-  id = params["id"]
   database = PG.connect(dbname: "tiy-database")
-  database.exec("DELETE FROM  employees where id = $1", [id])
+
+  @employee = Employee.find(params["id"])
+
+  @employee.destroy
 
   redirect('/employees')
 end

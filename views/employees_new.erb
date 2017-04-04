@@ -46,33 +46,39 @@
       </div><!-- /.container-fluid -->
     </nav>
     <div class="container">
+      <% if @employee.errors.any? %>
+        <div class="alert alert-danger" role="alert">
+          <strong>Careful!</strong>
+          <%= @employee.errors.full_messages.join(" and ") %>
+        </div>
+      <% end %>
       <form action="/employees_new" method="get" class="form-horizontal">
         <div class="form-group">
-          <label for="exampleInputEmail1">Name</label>
+          <label class="control-label">Name</label>
           <input type="text" name="name" value="<%= @employee["name"]%>" class="form-control">
         </div>
         <div class="form-group">
-          <label for="exampleInputEmail1">Phone Number</label>
+          <label class="control-label">Phone Number</label>
           <input type="text" name="phone" class="form-control" value="<%= @employee["phone"]%>">
         </div>
         <div class="form-group">
-          <label for="exampleInputPassword1">Address</label>
+          <label class="control-label">Address</label>
           <input type="text" name="address" class="form-control" value="<%= @employee["address"]%>">
         </div>
         <div class="form-group">
-          <label for="exampleInputEmail1">Position</label>
+          <label class="control-label">Position</label>
           <input type="text" name="position" class="form-control" value="<%= @employee["position"]%>">
         </div>
         <div class="form-group">
-          <label for="exampleInputEmail1">Salary</label>
+          <label class="control-label">Salary</label>
           <input type="text" name="salary" class="form-control" value="<%= @employee["salary"]%>">
         </div>
         <div class="form-group">
-          <label for="exampleInputEmail1">Github Account Name</label>
+          <label class="control-label">Github Account Name</label>
           <input type="text" name="github" class="form-control" value="<%= @employee["github"]%>">
         </div>
         <div class="form-group">
-          <label for="exampleInputEmail1">Slack Account Name</label>
+          <label class="control-label">Slack Account Name</label>
           <input type="text" name="slack" class="form-control" value="<%= @employee["slack"]%>">
         </div>
         <button type="submit" class="btn btn-default">Submit</button>
