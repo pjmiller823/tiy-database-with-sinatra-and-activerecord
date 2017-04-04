@@ -18,6 +18,8 @@ class Employee < ActiveRecord::Base
 end
 
 class Course < ActiveRecord::Base
+  validates :name, presence: true
+
   self.primary_key = "id"
 end
 
@@ -50,10 +52,25 @@ get '/employee_show' do
   end
 end
 
+get '/course_show' do
+  @course = Course.find(params["id"])
+  if @course
+    erb :course_show
+  else
+    redirect('/')
+  end
+end
+
 get '/new' do
   @employee = Employee.new
 
   erb :employees_new
+end
+
+get '/course_new' do
+  @course = Employee.new
+
+  erb :new_course
 end
 
 get '/employees_new' do
@@ -61,8 +78,16 @@ get '/employees_new' do
   if @employee.valid?
     redirect('/')
   else
-    p @employee.errors.messages
     erb :employees_new
+  end
+end
+
+get '/new_course' do
+  @course = Course.create(params)
+  if @course.valid?
+    redirect('/')
+  else
+    erb :new_course
   end
 end
 

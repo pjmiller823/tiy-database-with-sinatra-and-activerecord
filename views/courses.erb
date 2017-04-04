@@ -65,15 +65,15 @@
           <tr>
             <td></a> <%= course ["id"] %></td>
             <td><a href="/course_show?id=<%= course['id'] %>"><%= course ["name"] %></td>
-            <td><%= employee ["subject"] %></td>
+            <td><%= course ["subject"] %></td>
           </tr>
           <th>start date</th>
           <th>end date</th>
           <th>intensive?</th>
           <tr>
-            <td><%= employee ["start_date"] %></td>
-            <td><%= employee ["end_date"] %></td>
-            <td><%= employee ["intensive"] %></td>
+            <td><%= course ["start_date"] %></td>
+            <td><%= course ["end_date"] %></td>
+            <td><%= course ["intensive"] %></td>
           </tr>
           <% end %>
         </table>
