@@ -17,6 +17,10 @@ class Employee < ActiveRecord::Base
   self.primary_key = "id"
 end
 
+class Course < ActiveRecord::Base
+  self.primary_key = "id"
+end
+
 after do
   ActiveRecord::Base.connection.close
 end
@@ -29,6 +33,12 @@ get '/employees' do
   @employees = Employee.all
 
   erb :employees
+end
+
+get '/courses' do
+  @courses = Course.all
+
+  erb :courses
 end
 
 get '/employee_show' do
@@ -95,3 +105,5 @@ get '/delete' do
 
   redirect('/employees')
 end
+
+# Need to double the gets for courses. copy then include pertinant information.
