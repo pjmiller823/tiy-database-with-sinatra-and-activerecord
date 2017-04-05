@@ -27,7 +27,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">TIY-Home</a>
+          <a class="navbar-brand" href="/">TIY</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
@@ -46,35 +46,37 @@
       </div><!-- /.container-fluid -->
     </nav>
     <div class="container">
-      <div class="panel panel-success">
-      <div class="panel-heading">Click the name of the course to edit.</div>
-        <table class="table table-striped"
-          <table class="table">
-          <th>#</th>
-          <th>name</th>
-          <th>subject</th>
-          <tr>
-            <td></a> <%= @course["id"] %></td>
-            <td><a href="/course_edit?id=<%= @course['id'] %>"><%= @course ["name"] %></td>
-            <td><%= @course["subject"] %></td>
-          </tr>
-          <th>start_date</th>
-          <th>end_date</th>
-          <th>intensive</th>
-          <tr>
-            <td><%= @course["start_date"] %></td>
-            <td><%= @course["end_date"] %></td>
-            <td><%= @course["intensive"] %></td>
-          </tr>
-        </table>
-      </table>
+      <% if @course.errors.any? %>
+        <div class="alert alert-danger" role="alert">
+          <strong>Come on now,</strong>
+          <%= @course.errors.full_messages.join(" and ") %>
+        </div>
+      <% end %>
+      <form action="/course_update" method="get" class="form-horizontal">
+        <input type="hidden" name="id" value="<%= @course["id"]%>" class="form-control">
+        <div class="form-group <%= @course.errors[:name].any? ? "has-error" : "" %>">
+          <label class="control-label" for="name">Name </label>
+          <input type="text" name="name" value="<%= @course["name"]%>" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="subject">Subject</label>
+          <input type="text" name="subject" value="<%= @course["subject"]%>" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="start date">Start Date</label>
+          <input type="text" name="start_date" value="<%= @course["start_date"]%>" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="end date">End Date</label>
+          <input type="text" name="end_date" value="<%= @course["end_date"]%>" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="intensive">Intensive?</label>
+          <input type="text" name="intensive" value="<%= @course["intensive"]%>" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
     </div>
-    </div>
-    <div class="well-lg text-center">
-      Sholud a course not be here? Click here to delete them!
-      <a class="btn btn-success btn-lg" href="/course_delete?id=<%= @course['id'] %>" role="button">Delete!</a>
-    </div>
-  </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->

@@ -114,6 +114,14 @@ get '/edit' do
 
 end
 
+get '/course_edit' do
+  database = PG.connect(dbname: "tiy-database")
+
+  @course = Course.find(params["id"])
+
+  erb :course_edit
+end
+
 get '/update' do
   database = PG.connect(dbname: "tiy-database")
 
@@ -128,6 +136,20 @@ get '/update' do
   end
 end
 
+get '/course_update' do
+  database = PG.connect(dbname: "tiy-database")
+
+  @course = Course.find(params["id"])
+
+  @course.update_attributes(params)
+
+  if @course.valid?
+    redirect to("/course_show?id=#{@course.id}")
+  else
+    erb :edit
+  end
+end
+
 get '/delete' do
   database = PG.connect(dbname: "tiy-database")
 
@@ -136,6 +158,16 @@ get '/delete' do
   @employee.destroy
 
   redirect('/employees')
+end
+
+get '/course_delete' do
+  database = PG.connect(dbname: "tiy-database")
+
+  @course = Course.find(params["id"])
+
+  @course.destroy
+
+  redirect('/courses')
 end
 
 # Need to double the gets for courses. copy then include pertinant information.
